@@ -30,19 +30,15 @@ static const char *const KW_8[] = { "松山湖", "园区", "这栋楼" };
 static const char *const KW_9[] = { "研发文化", "文化", "氛围" };
 static const char *const KW_10[] = { "价值观", "为什么这么做", "理念" };
 
-static const story_followup_t FU_story_metaerp_fu0[] = {
+static const story_followup_t FU_story_metaerp[] = {
     { KW_1, 2, "因为关键系统受制于人时业务连续性会受影响把能力掌握在自己手里是给业务留一条自己的路", "story_metaerp_fu0" },
-};
-static const story_followup_t FU_story_metaerp_fu1[] = {
     { KW_2, 2, "对应华为公开材料里关于自主可控与数字化实践的表述", "story_metaerp_fu1" },
 };
-static const story_followup_t FU_story_compute_fu0[] = {
+static const story_followup_t FU_story_compute[] = {
     { KW_1, 2, "算力不是目的是把研究更快变成可交付的东西工具链的积累往往比单次突破更长久", "story_compute_fu0" },
-};
-static const story_followup_t FU_story_compute_fu1[] = {
     { KW_4, 2, "后来这套思路被沉淀进日常研发流程新项目一开始就能站在已有的平台上", "story_compute_fu1" },
 };
-static const story_followup_t FU_story_team_fu0[] = {
+static const story_followup_t FU_story_team[] = {
     { KW_1, 2, "复杂问题靠单点英雄解决不了让听得见炮声的人参与决策是减少返工最直接的办法", "story_team_fu0" },
 };
 
@@ -54,7 +50,7 @@ static const story_t STORY_ITEMS_INTERNAL[] = {
         .source = "华为公开材料 数字化转型实践（待补URL）",
         .confidence = STORY_CONF_MIXED, .verified = false,
         .keywords = KW_0, .keyword_count = 4,
-        .followups = FU_story_metaerp_fu0, .followup_count = 2,
+        .followups = FU_story_metaerp, .followup_count = 2,
     },
     {
         .id = "story_compute", .theme = 0, .title = "算力背后的平台思路",
@@ -62,7 +58,7 @@ static const story_t STORY_ITEMS_INTERNAL[] = {
         .source = "华为官网 算力与计算生态公开介绍（待补URL）",
         .confidence = STORY_CONF_MIXED, .verified = false,
         .keywords = KW_3, .keyword_count = 3,
-        .followups = FU_story_compute_fu0, .followup_count = 2,
+        .followups = FU_story_compute, .followup_count = 2,
     },
     {
         .id = "story_review", .theme = 2, .title = "把复盘写成习惯",
@@ -78,7 +74,7 @@ static const story_t STORY_ITEMS_INTERNAL[] = {
         .source = "华为公开材料 以客户为中心 一线呼唤炮火（待补URL）",
         .confidence = STORY_CONF_MIXED, .verified = false,
         .keywords = KW_6, .keyword_count = 3,
-        .followups = FU_story_team_fu0, .followup_count = 1,
+        .followups = FU_story_team, .followup_count = 1,
     },
     {
         .id = "story_customer", .theme = 4, .title = "客户问题怎么变成研发需求",
