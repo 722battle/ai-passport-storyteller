@@ -13,9 +13,17 @@
 
 set -euo pipefail
 
-# ======== 改成你自己的 GitHub 仓库地址 ========
-REPO_URL="https://github.com/YOUR_USERNAME/ai-passport-storyteller.git"
-# ============================================
+# ======== GitHub 仓库地址（已按你的仓库填好）========
+REPO_URL="https://github.com/722battle/ai-passport-storyteller.git"
+# ================================================
+
+# 若设置了 GITHUB_TOKEN 环境变量，用令牌构造带鉴权的推送地址；
+# 否则用原始地址，推送时由 Git 交互提示输入用户名 + 令牌。
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+    PUSH_URL="https://${GITHUB_TOKEN}@github.com/722battle/ai-passport-storyteller.git"
+else
+    PUSH_URL="$REPO_URL"
+fi
 
 cd "$(dirname -- "${BASH_SOURCE[0]}")/.."
 
@@ -27,11 +35,11 @@ fi
 BRANCH="$(git branch --show-current)"
 echo "当前分支: $BRANCH"
 
-# 若已存在 origin，先更新地址；否则新增
+# 若已存在 origin，先更新地址；否则新增（用带令牌的地址，令牌不落盘到仓库配置以外）
 if git remote get-url origin >/dev/null 2>&1; then
-    git remote set-url origin "$REPO_URL"
+    git remote set-url origin "$PUSH_URL"
 else
-    git remote add origin "$REPO_URL"
+    git remote add origin "$PUSH_URL"
 fi
 
 echo "推送分支到 GitHub..."
