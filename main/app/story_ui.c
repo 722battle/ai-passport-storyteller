@@ -362,7 +362,7 @@ void story_ui_set_face(story_face_t face) {
 
     // 眼镜高亮：仅聆听态显示。
     if (face == STORY_FACE_LISTEN) {
-        lv_obj_clear_flag(s_glasses_hl, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_remove_flag(s_glasses_hl, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_add_flag(s_glasses_hl, LV_OBJ_FLAG_HIDDEN);
     }
@@ -460,7 +460,7 @@ void story_ui_set_followups(const char *const *labels, size_t count) {
         if (i < count && labels && labels[i]) {
             lv_label_set_text_fmt(s_followups[i], "OK[%d] %s", (int)(i + 1), labels[i]);
             lv_obj_set_pos(s_followups[i], PAD, 202 + (int)i * 26);
-            lv_obj_clear_flag(s_followups[i], LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(s_followups[i], LV_OBJ_FLAG_HIDDEN);
         } else {
             lv_obj_add_flag(s_followups[i], LV_OBJ_FLAG_HIDDEN);
         }
