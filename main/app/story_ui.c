@@ -52,6 +52,8 @@ static lv_obj_t *s_questions[8];
 static size_t s_question_count = 0;
 static lv_obj_t *s_theme_hint = NULL;
 static story_face_t s_face = STORY_FACE_IDLE;
+// 记录上一次是否已"歪头"，供 set_face 计算位移偏移，切页时复位。
+static bool s_last_tilt = false;
 
 // ---------------------------------------------------------------------------
 // 内部工具：创建一个圆角卡片。
@@ -212,6 +214,7 @@ static lv_obj_t *create_header(lv_obj_t *parent, const char *title) {
 // 注意：删除 screen 前调用方必须已停止所有可能访问这些对象的任务/定时器。
 // ---------------------------------------------------------------------------
 static void destroy_screen(void) {
+    s_last_tilt = false;   // 新页面的 mascot 从基准位置开始，无偏移
     s_title = NULL;
     s_body = NULL;
     s_mascot = NULL;
@@ -385,8 +388,17 @@ void story_ui_set_face(story_face_t face) {
             lv_obj_set_size(s_scarf, 52, 10);
             break;
     }
-    lv_obj_set_style_transform_rotation(s_mascot,
-        (face == STORY_FACE_THINK || face == STORY_FACE_UNCERTAIN) ? 400 : 0, 0);
+    // 不用 transform rotation：LVGL 9.5 已移除 lv_obj_set_style_transform_rotation。
+    // "思考/不确定"的歪头改用整体轻微水平位移表达。基准 x 依页面不同（欢迎页居中、
+    // 讲述页靠左），所以从当前读取再偏移，避免把欢迎页形象挪走。
+    const int base_x = lv_obj_get_x(s_mascot);
+    const int base_y = lv_obj_get_y(s_mascot);
+    const bool tilt = (face == STORY_FACE_THINK || face == STORY_FACE_UNCERTAIN);
+    // 每次切换用固定的小偏移：歪头时 +4px，恢复时 -4px；配合状态记录避免累计漂移。
+    if (tilt != s_last_tilt) {
+        lv_obj_set_pos(s_mascot, base_x + (tilt ? 4 : -4), base_y);
+        s_last_tilt = tilt;
+    }
 }
 
 void story_ui_set_battery(int soc) {
