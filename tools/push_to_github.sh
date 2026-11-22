@@ -51,6 +51,10 @@ echo "打 tag $TAG 触发云编译..."
 git tag -f "$TAG" >/dev/null 2>&1 || true
 git push -f origin "$TAG"
 
+# 安全：推送完成后把 origin 恢复为不含令牌的地址，避免令牌残留在 .git/config
+git remote set-url origin "$REPO_URL"
+unset GITHUB_TOKEN
+
 echo ""
 echo "已推送。下一步："
 echo "  1. 打开 GitHub 仓库 -> Actions 页，等 'Build firmware' 跑完（绿色对勾）。"
