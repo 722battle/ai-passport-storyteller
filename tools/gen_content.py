@@ -117,13 +117,17 @@ def main() -> int:
                      ", ".join('"' + cstr(w) + '"' for w in words) + " };")
     lines.append("")
 
-    # 每条故事的追问数组
+    # 每条故事的追问数组：一条故事的所有追问必须在【同一个数组】里，
+    # .followups 指向该数组首元素，followup_count 为总数。
+    # 之前每个追问各生成一个数组导致 fu1 未被引用，-Werror=unused-const-variable 报错。
     for sid, theme, title, body, source, verified, conf, kw_i, fus in story_defs:
+        if not fus:
+            continue
+        arr = "FU_" + "".join(c if c.isalnum() else "_" for c in sid)
+        lines.append(f"static const story_followup_t {arr}[] = {{")
         for fkw_i, answer, audio_id in fus:
-            arr = "FU_" + "".join(c if c.isalnum() else "_" for c in audio_id)
-            lines.append(f"static const story_followup_t {arr}[] = {{")
             lines.append(f'    {{ KW_{fkw_i}, {len(keyword_sets[fkw_i])}, "{answer}", "{audio_id}" }},')
-            lines.append("};")
+        lines.append("};")
 
     lines += ["", "// 故事表", "static const story_t STORY_ITEMS_INTERNAL[] = {"]
     for idx, (sid, theme, title, body, source, verified, conf, kw_i, fus) in enumerate(story_defs):
@@ -134,8 +138,8 @@ def main() -> int:
         lines.append(f"        .confidence = {conf}, .verified = {verified},")
         lines.append(f"        .keywords = KW_{kw_i}, .keyword_count = {len(keyword_sets[kw_i])},")
         if fus:
-            fu_names = ["FU_" + "".join(c if c.isalnum() else "_" for c in a) for _, _, a in fus]
-            lines.append(f"        .followups = {fu_names[0]}, .followup_count = {len(fu_names)},")
+            arr = "FU_" + "".join(c if c.isalnum() else "_" for c in sid)
+            lines.append(f"        .followups = {arr}, .followup_count = {len(fus)},")
         else:
             lines.append("        .followups = NULL, .followup_count = 0,")
         lines.append("    },")
